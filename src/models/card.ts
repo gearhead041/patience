@@ -61,7 +61,10 @@ function dragAndDrop(card: Card) {
 	var offset = [0, 0];
 	var destPillar: Element | null;
 	var zIndex: string;
-
+	var position = {
+		left:"",
+		top:""
+	}
 	const onMouseMove = (event: MouseEvent) => {
 		event.preventDefault();
 		const mousePosition = {
@@ -101,8 +104,8 @@ function dragAndDrop(card: Card) {
 		}
 		else {
 			//reset position here here if no pillar is hovered over
-			div.style.top = "";
-			div.style.left = "";
+			div.style.left = position.left;
+			div.style.top = position.top;
 		}
 		document.removeEventListener("mousemove", onMouseMove);
 		document.removeEventListener("mouseup", onMouseUp);
@@ -113,9 +116,12 @@ function dragAndDrop(card: Card) {
 		function (e) {
 			e.preventDefault();
 			e.stopPropagation();
+			//save initial state
 			zIndex = card.div.style.zIndex;
+			position.left = div.style.left;
+			position.top = div.style.top;
 			offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
-			div.style.zIndex = "200"; //make sure it's on top while dragging
+			div.style.zIndex = "1000"; //make sure it's on top while dragging
 			document.addEventListener("mousemove", onMouseMove);
 			document.addEventListener("mouseup", onMouseUp);
 		},

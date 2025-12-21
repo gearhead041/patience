@@ -34,19 +34,18 @@ export function initializeItems() {
 /// returns number of cards moved
 export function makeMove(move: move) : number
 {
-	console.log('move obj',move);
+	console.log('src pillar',move.source);
+	// TODO check if move is valid
+	// if (destCards.length > 0)
+	// {
+	// Check if the move is valid (e.g. alternating suits)
+	// 	// If invalid, return cards to source
+	// 	move.source.push(cardMoved);
+	// 	return 0;
+	// }
 	var cardMoved = move.source.pop(move.index);
-	if (cardMoved)
-	{
-		var destCards = move.destination.cards!;
-		// Check if the move is valid (e.g. alternating suits)
-		// Also checking if destination has cards to avoid undefined access
-		if (destCards.length > 0 && destCards[destCards.length - 1].suit === cardMoved[0].suit)
-		{
-			// If invalid, return cards to source
-			move.source.push(cardMoved);
-			return 0;
-		}
+	if (cardMoved) {
+		console.log('cards to move', cardMoved);
 		move.destination.push(cardMoved);
 		return cardMoved.length;
 	}

@@ -46,7 +46,10 @@ export class Pillar {
 		}
 		else {
 			var cardBelow = this.cards![index - 1]; //target lower card
-			cardBelow.flip();
+			if(!cardBelow.isFaceup) {
+
+				cardBelow.flip();
+			}
 			cardPopped = cardBelow.popTop();
 		}
 		var cardsPopped = this.cards?.splice(index) ?? null;
