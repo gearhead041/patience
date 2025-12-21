@@ -1,5 +1,5 @@
 import type { Card } from "./card";
-import { Pillar } from "./Pillar";
+import { Pillar } from "./pillar";
 
 export class Stack {
 	public onTop: Stack | null = null;

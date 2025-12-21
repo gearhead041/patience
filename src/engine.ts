@@ -1,4 +1,4 @@
-import { Card, dragAndDrop } from "./models/card";
+import { Card } from "./models/card";
 import { Suit, Board, Market, type move } from "./models/models";
 
 
@@ -43,7 +43,7 @@ export function makeMove(move: move) : number
 		// Also checking if destination has cards to avoid undefined access
 		if (destCards.length > 0 && destCards[destCards.length - 1].suit === cardMoved[0].suit)
 		{
-			// If invalid, return cards to source to prevent data loss
+			// If invalid, return cards to source
 			move.source.push(cardMoved);
 			return 0;
 		}

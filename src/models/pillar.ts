@@ -9,9 +9,6 @@ export class Pillar {
 		(this.div as any).pillar = this;
 	}
 	public push(cards: Card[]) {
-		// 1. First: Capture the current position of the moving card (e.g. under the mouse)
-		const firstRect = cards[0].div.getBoundingClientRect();
-
 		if (this.cards.length === 0) { // if this is the first card we're adding here
 			this.cards.push(...cards);
 			this.div.appendChild(cards[0].div);
@@ -36,21 +33,7 @@ export class Pillar {
 			}
 		});
 
-		// 2. Last: Capture the new position inside the pillar
-		const lastRect = cards[0].div.getBoundingClientRect();
 
-		// 3. Invert: Calculate the difference
-		const deltaX = firstRect.left - lastRect.left;
-		const deltaY = firstRect.top - lastRect.top;
-
-		// 4. Play: Animate from the offset back to zero
-		cards[0].div.animate([
-			{ transform: `translate(${deltaX}px, ${deltaY}px)` },
-			{ transform: 'translate(0, 0)' }
-		], {
-			duration: 200,
-			easing: 'ease-out'
-		});
 
 		return;
 	}

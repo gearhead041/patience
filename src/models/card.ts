@@ -1,6 +1,6 @@
 import { makeMove } from "../engine";
 import { Stack, Suit } from "./models";
-import type { Pillar } from "./Pillar";
+import type { Pillar } from "./pillar";
 
 export class Card extends Stack {
 	public value: number;
@@ -56,7 +56,7 @@ export class Card extends Stack {
 	}
 }
 
-export function dragAndDrop(card: Card) {
+function dragAndDrop(card: Card) {
 	var div = card.div;
 	var offset = [0, 0];
 	var destPillar: Element | null;
@@ -85,11 +85,10 @@ export function dragAndDrop(card: Card) {
 	}
 
 	const onMouseUp = (event: MouseEvent) => {
-		// Check what is underneath the mouse
 		event.preventDefault();
+		var srcPillar = div.closest(".pillar");
 		destPillar = getLowerPillarElem(event);
 		div.style.zIndex = zIndex;
-		var srcPillar = div.closest(".pillar");
 		if (destPillar && srcPillar !== destPillar) {
 			// console.log('reached lower pillar');
 			const dest = (destPillar as any).pillar as Pillar;
@@ -116,7 +115,7 @@ export function dragAndDrop(card: Card) {
 			e.stopPropagation();
 			zIndex = card.div.style.zIndex;
 			offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
-			div.style.zIndex = "200";
+			div.style.zIndex = "200"; //make sure it's on top while dragging
 			document.addEventListener("mousemove", onMouseMove);
 			document.addEventListener("mouseup", onMouseUp);
 		},
