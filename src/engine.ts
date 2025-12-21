@@ -1,13 +1,14 @@
-import { Card } from "./models/card";
+import { Card, dragAndDrop } from "./models/card";
 import { Suit, Board, Market, type move } from "./models/models";
 
 
 export function initializeItems() {
+	//TODO this is absolutely shitty performance make it faster
 	var suits: Suit[] = [
-		new Suit("Red", "Heart"),
-		new Suit("Red", "Diamond"),
-		new Suit("Black", "Clubs"),
-		new Suit("Black", "Spade"),
+		new Suit("Red", "heart"),
+		new Suit("Red", "diamond"),
+		new Suit("Black", "clubs"),
+		new Suit("Black", "spade"),
 	];
 	var market = new Market(createCards(suits));
 	market.shuffle();
@@ -33,6 +34,7 @@ export function initializeItems() {
 /// returns number of cards moved
 export function makeMove(move: move) : number
 {
+	console.log('move obj',move);
 	var cardMoved = move.source.pop(move.index);
 	if (cardMoved)
 	{

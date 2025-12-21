@@ -1,6 +1,7 @@
 .card {
 	width: 100px;
 	height: 120px;
+	position: absolute;
 }
 
 .card.facedown {
@@ -24,7 +25,7 @@ generic cardback
 
 .pillar {
 	position: relative;
-	min-width: 100px; /*look at this carefully*/
+	min-width: 100px; /*look at this carefully shoud make responsive later*/
 	height: 100%;
 }
 
