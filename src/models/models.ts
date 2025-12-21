@@ -1,4 +1,5 @@
 import type { Card } from "./card";
+import { Pillar } from "./Pillar";
 
 export class Stack {
 	public onTop: Stack | null = null;
@@ -28,46 +29,13 @@ class Suit {
 	}
 }
 
-//
-// ontop here refers to the card at the top of this pillar
-//
-class Pillar {
-	public cards: Card[] | null = null;
-
-	public push(card: Card[]) {
-
-		if (this.cards)
-		{
-			var topCard = this.cards![-1];
-			topCard.pushTop(card[0]);
-			this.cards.push(...card);
-			return;
-		}
-
-
-	}
-
-	public pop(index: number): Card[] | null {
-		var cardPopped: Card | null;
-		if (index === 0) {
-			cardPopped = this.cards![0];
-		}
-		else {
-			
-			var cardBelow = this.cards![index - 1]; //target lower card
-			cardBelow.flip();
-			cardPopped = cardBelow?.popTop()
-		}
-		//remove all lower cards from array
-		var cardsPopped = this.cards?.splice(index) ?? null;
-		return cardsPopped;
-	}
-}
-
 class Board {
 	public pillars: ReadonlyArray<Pillar>;
+	public div: HTMLDivElement = document.createElement("div");
 	constructor(numLanes: number = 7) {
 		this.pillars = new Array(numLanes).fill(null).map(() => new Pillar());
+		this.div.append(...this.pillars.map((x) => x.div));
+		this.div.className = "board";
 	}
 }
 

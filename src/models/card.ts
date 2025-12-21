@@ -5,7 +5,7 @@ export class Card extends Stack {
 	public suit: Suit;
 	public isFaceup: boolean;
 	public declare onTop: Card;
-	private div!: HTMLDivElement;
+	public div!: HTMLDivElement;
 
 	constructor(value: number, suit: Suit) {
 		super();
@@ -30,22 +30,23 @@ export class Card extends Stack {
 		this.isFaceup = !this.isFaceup;
 	}
 
-	private draw() {
+	public draw() {
 		var div = document.createElement("div");
 		div.className = "card";
-		document.body.appendChild(div);
 		div.classList.add("facedown");
+		div.style.position = "absolute";
+		div.classList.add(this.suit.shape.toLowerCase())
 		dragAndDrop(div);
 		this.div = div;
 	}
 
-	public override pushTop(card: Card) {
-		if (Math.abs(this.value - card.value) === 1) {
-			this.onTop = card;
-			return;
-		}
-		throw new Error("Sequential numbers only");
-	}
+	// public override pushTop(card: Card) {
+	// 	if (Math.abs(this.value - card.value) === 1) {
+	// 		this.onTop = card;
+	// 		return;
+	// 	}
+	// 	throw new Error("Sequential numbers only");
+	// }
 
 	public toString() {
 		return this.value + " of " + this.suit.toString();
@@ -53,39 +54,29 @@ export class Card extends Stack {
 }
 
 function dragAndDrop(div: HTMLDivElement) {
-	var isDown = false;
 	var offset = [0, 0];
-	var mousePosition;
+
+	const onMouseMove = (event: MouseEvent) => {
+		event.preventDefault();
+		const mousePosition = {
+			x: event.clientX,
+			y: event.clientY,
+		};
+		div.style.left = mousePosition.x + offset[0] + "px";
+		div.style.top = mousePosition.y + offset[1] + "px";
+	};
+
+	const onMouseUp = () => {
+		document.removeEventListener("mousemove", onMouseMove, true);
+		document.removeEventListener("mouseup", onMouseUp, true);
+	};
 
 	div.addEventListener(
 		"mousedown",
 		function (e) {
-			isDown = true;
 			offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
-		},
-		true
-	);
-
-	document.addEventListener(
-		"mouseup",
-		function () {
-			isDown = false;
-		},
-		true
-	);
-
-	document.addEventListener(
-		"mousemove",
-		function (event) {
-			event.preventDefault();
-			if (isDown) {
-				mousePosition = {
-					x: event.clientX,
-					y: event.clientY,
-				};
-				div.style.left = mousePosition.x + offset[0] + "px";
-				div.style.top = mousePosition.y + offset[1] + "px";
-			}
+			document.addEventListener("mousemove", onMouseMove, true);
+			document.addEventListener("mouseup", onMouseUp, true);
 		},
 		true
 	);

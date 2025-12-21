@@ -1,5 +1,5 @@
-import { Card } from "./card";
-import { Suit, Board, Market, type move } from "./models";
+import { Card } from "./models/card";
+import { Suit, Board, Market, type move } from "./models/models";
 
 
 export function initializeItems() {
@@ -20,8 +20,13 @@ export function initializeItems() {
 			pillar.push(card);
 		}
 		//flip the end of the pillar card over
-		pillar.cards![-1].flip();
+		pillar.cards![pillar.cards.length-1].flip();
 		count++;
+	}
+	return {
+		board,
+		market,
+		suits,
 	}
 }
 
