@@ -1,4 +1,4 @@
-import { Card } from "./Card";
+import { Card } from "./card";
 import { Suit, Board, Market, type move } from "./models";
 
 

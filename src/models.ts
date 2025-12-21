@@ -1,4 +1,4 @@
-import type { Card } from "./Card";
+import type { Card } from "./card";
 
 export class Stack {
 	public onTop: Stack | null = null;
