@@ -1,0 +1,13 @@
+.card {
+	width: 10px;
+	background-color: aqua;
+	height: 12px;
+
+}
+
+.card.facedown {
+
+}
+.card.faceup {
+	
+}
