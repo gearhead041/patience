@@ -34,22 +34,50 @@ export function initializeItems() {
 /// returns number of cards moved
 export function makeMove(move: move) : number
 {
-	console.log('src pillar',move.source);
-	// TODO check if move is valid
-	// if (destCards.length > 0)
-	// {
-	// Check if the move is valid (e.g. alternating suits)
-	// 	// If invalid, return cards to source
-	// 	move.source.push(cardMoved);
-	// 	return 0;
-	// }
-	var cardMoved = move.source.pop(move.index);
-	if (cardMoved) {
-		console.log('cards to move', cardMoved);
-		move.destination.push(cardMoved);
-		return cardMoved.length;
+	
+	var srcCards = move.source.pop(move.index);
+	var destCards = move.destination.cards;
+	var destCard: Card | null = null;
+	if (srcCards) {
+
+		if(destCards.length) {
+			destCard = destCards[destCards.length -1];
+		}
+
+		if(!validateMove(srcCards[0],destCard))
+		{
+			//unflip source card
+			if(move.source.cards.length){
+
+				move.source.cards[move.source.cards.length -1].flip();
+			}
+			//undo move	
+			move.source.push(srcCards);
+			return 0;
+		}
+
+		move.destination.push(srcCards);
+		console.log('here moved')
+		return srcCards.length;
 	}
 	return 0;
+}
+
+function validateMove(srcCard: Card, destCard: Card | null): boolean
+{
+	// TODO check if move is valid
+	if(destCard == null && srcCard.value === 13) //kings only start an empty lane
+	{
+		return true;
+	}
+	if( destCard?.suit.color === srcCard.suit.color // suits must alternate colors
+		|| ((destCard?.value ?? 0) - srcCard.value !== 1 )// diff of one
+	) 
+	{
+		console.log('invalid move')
+		return false;
+	}
+	return true;
 }
 
 export function undoMove(move: move, count: number) : void

@@ -12,23 +12,29 @@ generic cardback
  */
  background-color: aqua;
 }
+
 .card.faceup.clubs {
 	background-color: black;
+	color: white;
 }
 .card.faceup.spade {
 	background-color: black;
+	color: white;
 }
 .card.faceup.heart {
 	background-color: rgb(172, 15, 15);
 }
 .card.faceup.diamond {
 	background-color: rgb(172, 15, 15);
+	color: black;
 }
 
 .pillar {
 	position: relative;
 	min-width: 110px; /*look at this carefully shoud make responsive later*/
-	height: 100%;
+	height: 110px;
+	background-color: rgba(127, 255, 212, 0.265);
+	pointer-events: all;
 }
 
 .board {

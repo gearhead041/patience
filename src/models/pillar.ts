@@ -8,6 +8,7 @@ export class Pillar {
 		this.div.className = "pillar";
 		(this.div as any).pillar = this;
 	}
+
 	public push(cards: Card[]) {
 		if (this.cards.length === 0) { // if this is the first card we're adding here
 			this.cards.push(...cards);
@@ -32,8 +33,6 @@ export class Pillar {
 				c.div.style.top = "0px";
 			}
 		});
-
-
 
 		return;
 	}

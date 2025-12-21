@@ -32,6 +32,7 @@ export class Card extends Stack {
 		}
 		else {
 			this.div.classList.replace("facedown", "faceup");
+			this.div.textContent = this.value.toString();
 		}
 		this.isFaceup = !this.isFaceup;
 	}
@@ -43,7 +44,6 @@ export class Card extends Stack {
 		div.classList.add("facedown");
 		div.draggable = true;
 		this.div = div;
-		// dragAndDrop(this);
 	}
 
 	public override pushTop(card: Card) {
@@ -79,7 +79,7 @@ function dragAndDrop(card: Card) {
 		div.hidden = true;
 		const elemBelow = document.elementFromPoint(event.clientX, event.clientY);
 		div.hidden = false;
-		
+		console.log(elemBelow);
 		if (elemBelow) {
 			const pillarDiv = elemBelow.closest('.pillar');
 			return pillarDiv;
@@ -92,21 +92,26 @@ function dragAndDrop(card: Card) {
 		var srcPillar = div.closest(".pillar");
 		destPillar = getLowerPillarElem(event);
 		div.style.zIndex = zIndex;
+		var moved = false;
+
 		if (destPillar && srcPillar !== destPillar) {
 			// console.log('reached lower pillar');
 			const dest = (destPillar as any).pillar as Pillar;
 			const src = (srcPillar as any).pillar as Pillar;
-			makeMove({
+			var result = makeMove({
 				source: src,
 				destination: dest,
 				index: parseInt(div.style.zIndex),
 			})
+			moved = result > 0;
 		}
-		else {
-			//reset position here here if no pillar is hovered over
-			div.style.left = position.left;
-			div.style.top = position.top;
+
+		if(!moved) {
+			//reset position here here if no movement is made
+			div.style.left= "";
+			div.style.top = "10px";
 		}
+
 		document.removeEventListener("mousemove", onMouseMove);
 		document.removeEventListener("mouseup", onMouseUp);
 	};
