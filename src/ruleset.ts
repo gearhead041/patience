@@ -1,5 +1,5 @@
+import { Card } from "./Card";
 import { Suit, Board, Market, type move } from "./models";
-import { Card } from "./card";
 
 
 export function initializeItems() {
