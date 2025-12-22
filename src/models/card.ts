@@ -1,4 +1,5 @@
 import { makeMove } from "../engine";
+import type { MarketPillar } from "./Market";
 import { Stack, Suit } from "./models";
 import type { Pillar } from "./pillar";
 
@@ -6,7 +7,7 @@ export class Card extends Stack {
 	public value: number;
 	public suit: Suit;
 	public isFaceup: boolean;
-	public declare onTop: Card;
+	public declare onTop: Card | null; 
 	public div!: HTMLDivElement;
 
 	constructor(value: number, suit: Suit) {
@@ -22,13 +23,16 @@ export class Card extends Stack {
 		var lastChild = this.div.lastChild;
 		if (lastChild)
 			this.div.removeChild(lastChild);
-		return this.onTop;
+		var result = this.onTop;
+		this.onTop = null;
+		return result;
 	}
 
 	public flip() {
 		if (this.isFaceup)
 		{
 			this.div.classList.replace("faceup", "facedown");
+			this.div.textContent = "";
 		}
 		else {
 			this.div.classList.replace("facedown", "faceup");
@@ -37,12 +41,11 @@ export class Card extends Stack {
 		this.isFaceup = !this.isFaceup;
 	}
 
-	public draw() {
+	private draw() {
 		var div = document.createElement("div");
 		div.className = "card";
 		div.classList.add(this.suit.shape);
 		div.classList.add("facedown");
-		div.draggable = true;
 		this.div = div;
 	}
 
@@ -60,6 +63,7 @@ function dragAndDrop(card: Card) {
 	var div = card.div;
 	var offset = [0, 0];
 	var destPillar: Element | null;
+	var srcPillar:  Pillar | MarketPillar;
 	var zIndex: string;
 	var position = {
 		left:"",
@@ -81,6 +85,10 @@ function dragAndDrop(card: Card) {
 		div.hidden = false;
 		console.log(elemBelow);
 		if (elemBelow) {
+			if(elemBelow.closest('.market'))
+			{
+				return null;
+			}
 			const pillarDiv = elemBelow.closest('.pillar');
 			return pillarDiv;
 		}
@@ -95,7 +103,6 @@ function dragAndDrop(card: Card) {
 		var moved = false;
 
 		if (destPillar && srcPillar !== destPillar) {
-			// console.log('reached lower pillar');
 			const dest = (destPillar as any).pillar as Pillar;
 			const src = (srcPillar as any).pillar as Pillar;
 			var result = makeMove({
@@ -107,9 +114,16 @@ function dragAndDrop(card: Card) {
 		}
 
 		if(!moved) {
-			//reset position here here if no movement is made
-			div.style.left= "";
-			div.style.top = "10px";
+			if(div.closest(".market")) //reset differently when src is market pillar
+			{
+				div.style.left = "10px";
+				div.style.top = "0";
+			}
+			else {
+				//reset position here here if no movement is made
+				div.style.left= "";
+				div.style.top = "10px";
+			}
 		}
 
 		document.removeEventListener("mousemove", onMouseMove);
@@ -119,6 +133,10 @@ function dragAndDrop(card: Card) {
 	div.addEventListener(
 		"mousedown",
 		function (e) {
+			if(!card.isFaceup)
+			{
+				return;
+			}
 			e.preventDefault();
 			e.stopPropagation();
 			//save initial state

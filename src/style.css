@@ -2,8 +2,8 @@
 	width: 100px;
 	height: 120px;
 	position: absolute;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	border: 4px solid rebeccapurple;
+	 box-sizing: border-box;
+	outline: 0.1rem solid rebeccapurple;
 }
 
 .card.facedown {
@@ -31,10 +31,13 @@ generic cardback
 
 .pillar {
 	position: relative;
+	background-color: rgba(127, 255, 212, 0.265);
+}
+
+.board .pillar {
 	min-width: 110px; /*look at this carefully shoud make responsive later*/
 	height: 110px;
-	background-color: rgba(127, 255, 212, 0.265);
-	pointer-events: all;
+	/* pointer-events: all; */
 }
 
 .board {
@@ -42,4 +45,22 @@ generic cardback
 	height: 100%;
 	display: flex;
 	justify-content: space-evenly;
+}
+
+.top {
+	display: flex;
+	width: 100%;
+	flex-direction: row;
+}
+
+.market .pillar {
+	width: 100px;
+	height: 120px;
+	margin-left: 1rem;
+}
+
+.market {
+	display: flex;
+	margin-bottom: 1rem;
+	flex-direction: row;
 }

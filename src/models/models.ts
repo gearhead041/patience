@@ -66,30 +66,10 @@ class Foundation {
 	}
 }
 
-class Market {
-	public cards: Card[];
-
-	constructor(cards: Card[]) {
-		this.cards = cards;
-	}
-
-
-	public shuffle() {
-		for (let i = this.cards.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
-		}
-	}
-
-	public pop(): Card | undefined {
-		return this.cards.pop();
-	}
-}
-
 export interface move {
 	source: Pillar; // pillar being moved from 
 	destination: Pillar; // pillar being moved to
 	index: number; // index of card being moved (in source)
 }
 
-export { Board, Suit, Foundation, Market };
+export { Board, Suit, Foundation };

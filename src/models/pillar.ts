@@ -1,9 +1,11 @@
 import { Card } from "./card";
 
+
 //
 export class Pillar {
 	public cards: Card[] = [];
 	public div: HTMLDivElement = document.createElement("div");
+
 	constructor() {
 		this.div.className = "pillar";
 		(this.div as any).pillar = this;
@@ -11,9 +13,14 @@ export class Pillar {
 
 	public push(cards: Card[]) {
 		if (this.cards.length === 0) { // if this is the first card we're adding here
+			if(cards.length > 1) {
+				for (let i = 0; i < cards.length-1; i++) {
+					const card = cards[i];
+					card.pushTop(cards[i+1]);
+				}
+			}
 			this.cards.push(...cards);
 			this.div.appendChild(cards[0].div);
-			// TODO validate king rule here? or in move
 		}
 		else {
 			var topCard = this.cards[this.cards.length - 1];
@@ -21,6 +28,12 @@ export class Pillar {
 			this.cards.push(...cards);
 		}
 
+		this.offsetCards();
+		return;
+	}
+
+	public offsetCards()
+	{
 		this.cards.forEach((c, i) => { //refresh entire z index
 			c.div.style.zIndex = (i).toString();
 			c.div.style.left = ""; // Reset drag position to snap to parent/pillar
@@ -28,13 +41,11 @@ export class Pillar {
 			if (i > 0) {
 				const prev = this.cards[i - 1];
 				// In a nested structure, top is relative to the card above it
-				c.div.style.top = prev.isFaceup ? "30px" : "10px";
+				c.div.style.top = prev.isFaceup ? "20px" : "5px";
 			} else {
 				c.div.style.top = "0px";
 			}
 		});
-
-		return;
 	}
 
 	public pop(index: number): Card[] | null {
@@ -45,11 +56,10 @@ export class Pillar {
 		}
 		else {
 			var cardBelow = this.cards![index - 1]; //target lower card
+			cardPopped = cardBelow.popTop();
 			if(!cardBelow.isFaceup) {
-
 				cardBelow.flip();
 			}
-			cardPopped = cardBelow.popTop();
 		}
 		var cardsPopped = this.cards?.splice(index) ?? null;
 		return cardsPopped;
