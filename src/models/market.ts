@@ -1,3 +1,4 @@
+import { MARKET_FLIP_COUNT, MARKET_OFFSET } from "../constants";
 import { makeMove } from "../engine";
 import type { Card } from "./card";
 import { Pillar } from "./pillar";
@@ -44,16 +45,29 @@ export class MarketPillar extends Pillar {
 		super();
 		this.div.classList.add();
 	}
-	//TODO fix child containing parent issue
+
 	public override offsetCards() {
-		this.cards.forEach((c, i) => { //refresh entire z index
+
+		if(this.div.classList.contains("left")) {
+			this.cards.forEach((c,i) => {
+							c.div.style.zIndex = (i).toString();
+				if(c.isFaceup) c.flip(); //turn facedown
+				c.div.style.left = "0";
+			});
+			return;
+		}
+
+		this.cards.slice(- MARKET_FLIP_COUNT)
+		.forEach((c, i) => { //refresh entire z index starting from last card added using MAX_FLIP_COUNT
 			c.div.style.zIndex = (i).toString();
-			// c.div.style.left = ""; // Reset drag position to snap to parent
-			c.div.style.right = "";
-			if (i > 0 && this.div.classList.contains("right")) {
-				const prev = this.cards[i - 1];
-				
-				c.div.style.left = prev.isFaceup ? "10px" : "5px";
+
+			if (this.div.classList.contains("right")) {
+				if(i === 0) {
+					c.div.style.left = "0";
+				}
+				if(i > 0) {
+					c.div.style.left = MARKET_OFFSET;
+				}
 				c.div.style.top = "0";
 			}
 		});
@@ -63,19 +77,48 @@ export class MarketPillar extends Pillar {
 		var cardPopped: Card | null;
 		if (index === 0) {
 			cardPopped = this.cards![0];
-			this.div.removeChild(cardPopped.div);
+			this.div.removeChild(cardPopped.div); //TODO change for right pillar only allow top card to be popped
 		}
 		else {
-			var cardBelow = this.cards![index - 1]; //target lower card
+			var cardBelow = this.cards![index - 1]; //detach from lower card
 			cardPopped = cardBelow.popTop();
-			console.log('top pop market pillar',cardPopped)
-
 		}
 		var cardsPopped = this.cards?.splice(index) ?? null;
 		cardsPopped.forEach((x) =>{
 			if(!x.isFaceup) x.flip()
 		} );
+		if(this.div.classList.contains('left')) {
+			//revers the nesting of cards popped
+			//TODO can probablu optimize this
+			for (let i = cardsPopped.length -1; i > 0; i--) {
+				const curr = cardsPopped[i];
+				const next = cardsPopped[i-1];
+				console.log('curr',curr.div);
+				console.log('next',next.div);
+				next.popTop();
+				curr.pushTop(next);
+			}
+		}
 		return cardsPopped;
+	}
+
+	public override push(cards: Card[]): void {
+		if(this.div.classList.contains('right')) {
+			// cards.reverse();
+			console.log('cards',cards);
+			//put each card array in  div so there can be an overlay
+			this.div.appendChild(cards[cards.length-1].div);
+
+			if(this.cards.length){
+				this.cards[this.cards.length-1].pushTop(cards[cards.length-1]);
+			}
+			this.cards.push(...cards);
+			this.offsetCards();
+			console.log('cards contained',this.cards)
+		}
+		else {
+			super.push(cards);
+		}
 	}
 }
 
@@ -84,14 +127,28 @@ function popAndPushMarket(market: Market) {
 	var right = market.right;
 
 	left.div.addEventListener("click", (e) => {
-		console.log('clicked left');
 		e.preventDefault();
 		e.stopPropagation();
+		if(!left.cards.length)
+		{
+			makeMove({
+				source:right,
+				destination:left,
+				index:0
+			})
+			return;
+		}
+		//if it's less than move count move the whole thing
+		var cardCountToMove = 0;
+		if(left.cards.length > MARKET_FLIP_COUNT)
+		{
+			cardCountToMove = left.cards.length - MARKET_FLIP_COUNT
+		}
 		makeMove(
 			{
 				source:left,
 				destination:right,
-				index:left.cards.length-1
+				index: cardCountToMove
 			}
 		);
 	});

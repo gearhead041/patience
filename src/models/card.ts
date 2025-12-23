@@ -1,5 +1,5 @@
+import { MARKET_OFFSET, PILLAR_FACEDOWN_OFFSET, PILLAR_FACEUP_OFFSET } from "../constants";
 import { makeMove } from "../engine";
-import type { MarketPillar } from "./Market";
 import { Stack, Suit } from "./models";
 import type { Pillar } from "./pillar";
 
@@ -9,6 +9,7 @@ export class Card extends Stack {
 	public isFaceup: boolean;
 	public declare onTop: Card | null; 
 	public div!: HTMLDivElement;
+	private textNode!: Text;
 
 	constructor(value: number, suit: Suit) {
 		super();
@@ -20,9 +21,11 @@ export class Card extends Stack {
 	}
 
 	public override popTop(): Card | null {
-		var lastChild = this.div.lastChild;
-		if (lastChild)
-			this.div.removeChild(lastChild);
+		var childCard = this.div.querySelector(".card");
+		if (childCard) {
+			console.log('lastChild',childCard);
+			this.div.removeChild(childCard);
+		}
 		var result = this.onTop;
 		this.onTop = null;
 		return result;
@@ -32,11 +35,12 @@ export class Card extends Stack {
 		if (this.isFaceup)
 		{
 			this.div.classList.replace("faceup", "facedown");
-			this.div.textContent = "";
+			this.textNode.remove();
 		}
 		else {
 			this.div.classList.replace("facedown", "faceup");
-			this.div.textContent = this.value.toString();
+			this.textNode = document.createTextNode(this.value.toString());
+			this.div.appendChild(this.textNode);
 		}
 		this.isFaceup = !this.isFaceup;
 	}
@@ -63,7 +67,6 @@ function dragAndDrop(card: Card) {
 	var div = card.div;
 	var offset = [0, 0];
 	var destPillar: Element | null;
-	var srcPillar:  Pillar | MarketPillar;
 	var zIndex: string;
 	var position = {
 		left:"",
@@ -83,7 +86,6 @@ function dragAndDrop(card: Card) {
 		div.hidden = true;
 		const elemBelow = document.elementFromPoint(event.clientX, event.clientY);
 		div.hidden = false;
-		console.log(elemBelow);
 		if (elemBelow) {
 			if(elemBelow.closest('.market'))
 			{
@@ -116,13 +118,22 @@ function dragAndDrop(card: Card) {
 		if(!moved) {
 			if(div.closest(".market")) //reset differently when src is market pillar
 			{
-				div.style.left = "10px";
+				div.style.left =  MARKET_OFFSET; 
+				//reset differently for cards that begin a slice on the right pillar
+				if(div.parentElement?.classList.contains("right"))
+				{
+					div.style.left = "0";
+				}
 				div.style.top = "0";
 			}
 			else {
 				//reset position here here if no movement is made
 				div.style.left= "";
-				div.style.top = "10px";
+				div.style.top = card.isFaceup ? PILLAR_FACEUP_OFFSET : PILLAR_FACEDOWN_OFFSET;
+				if(div.parentElement?.classList.contains("pillar")) //first card on the pillar
+				{
+					div.style.top = "0";
+				}
 			}
 		}
 
@@ -133,10 +144,13 @@ function dragAndDrop(card: Card) {
 	div.addEventListener(
 		"mousedown",
 		function (e) {
-			if(!card.isFaceup)
+			if(!card.isFaceup 
+				|| (div.closest(".market") 
+				&& card.onTop))
 			{
 				return;
 			}
+			console.log(div.parentElement)
 			e.preventDefault();
 			e.stopPropagation();
 			//save initial state

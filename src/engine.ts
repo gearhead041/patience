@@ -38,31 +38,21 @@ export function makeMove(move: move) : number
 {
 	var destCards = move.destination.cards;
 	var destCard: Card | null = null;
-
 		
-		if(destCards.length) {
-			destCard = destCards[destCards.length -1];
-		}
-		
-		if(!(move.source instanceof MarketPillar && move.destination instanceof MarketPillar) 
-			&& !validateMove(move.source.cards[move.index],destCard))
-		{
-			// //unflip source card
-			// if(move.source.cards.length){
-				
-			// 	move.source.cards[move.source.cards.length -1].flip();
-			// }
-			// //undo move	
-			// move.source.push(srcCards);
-			return 0;
-		}
-		var srcCards = move.source.pop(move.index);
-
-		move.destination.push(srcCards!);
-		console.log('here moved')
-		return srcCards!.length;
+	if(destCards.length) {
+		destCard = destCards[destCards.length -1];
+	}
 	
-	return 0;
+	if(!(move.source instanceof MarketPillar && move.destination instanceof MarketPillar) 
+		&& !validateMove(move.source.cards[move.index],destCard))
+	{
+		return 0;
+	}
+	var srcCards = move.source.pop(move.index);
+
+	move.destination.push(srcCards!);
+	// console.log('here moved');
+	return srcCards!.length;
 }
 
 function validateMove(srcCard: Card, destCard: Card | null): boolean
@@ -71,17 +61,19 @@ function validateMove(srcCard: Card, destCard: Card | null): boolean
 	{
 		return true;
 	}
+
+
 	if( destCard?.suit.color === srcCard.suit.color // suits must alternate colors
 		|| ((destCard?.value ?? 0) - srcCard.value !== 1 )// diff of one
 	) 
 	{
-		console.log('invalid move')
+		console.log('invalid move');
 		return false;
 	}
 	return true;
 }
 
-export function undoMove(move: move, count: number) : void
+function undoMove(move: move, count: number) : void
 {
 	if (count <= 0) return;
 	var destLength = move.destination.cards!.length;

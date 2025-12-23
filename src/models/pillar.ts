@@ -1,3 +1,4 @@
+import { PILLAR_FACEDOWN_OFFSET, PILLAR_FACEUP_OFFSET } from "../constants";
 import { Card } from "./card";
 
 
@@ -41,7 +42,7 @@ export class Pillar {
 			if (i > 0) {
 				const prev = this.cards[i - 1];
 				// In a nested structure, top is relative to the card above it
-				c.div.style.top = prev.isFaceup ? "20px" : "5px";
+				c.div.style.top = prev.isFaceup ? PILLAR_FACEUP_OFFSET : PILLAR_FACEDOWN_OFFSET;
 			} else {
 				c.div.style.top = "0px";
 			}

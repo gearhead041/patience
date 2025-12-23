@@ -30,15 +30,12 @@ generic cardback
 }
 
 .pillar {
+	width: 100px; /*look at this carefully shoud make responsive later*/
 	position: relative;
+	height: 120px;
 	background-color: rgba(127, 255, 212, 0.265);
 }
 
-.board .pillar {
-	min-width: 110px; /*look at this carefully shoud make responsive later*/
-	height: 110px;
-	/* pointer-events: all; */
-}
 
 .board {
 	width: 100%;
@@ -54,8 +51,6 @@ generic cardback
 }
 
 .market .pillar {
-	width: 100px;
-	height: 120px;
 	margin-left: 1rem;
 }
 
