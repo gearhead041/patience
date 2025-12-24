@@ -59,17 +59,14 @@ export class MarketPillar extends Pillar {
 
 		this.cards.slice(- MARKET_FLIP_COUNT)
 		.forEach((c, i) => { //refresh entire z index starting from last card added using MAX_FLIP_COUNT
-			c.div.style.zIndex = (i).toString();
-
-			if (this.div.classList.contains("right")) {
-				if(i === 0) {
-					c.div.style.left = "0";
-				}
-				if(i > 0) {
-					c.div.style.left = MARKET_OFFSET;
-				}
-				c.div.style.top = "0";
+			c.div.style.zIndex = (this.cards.length+i).toString();
+			if(i === 0) {
+				c.div.style.left = "0";
 			}
+			if(i > 0) {
+				c.div.style.left = MARKET_OFFSET;
+			}
+			c.div.style.top = "0";
 		});
 	}
 
@@ -104,13 +101,13 @@ export class MarketPillar extends Pillar {
 
 	public override push(cards: Card[]): void {
 		if(this.div.classList.contains('right')) {
-			// cards.reverse();
+			cards.reverse();
 			console.log('cards',cards);
 			//put each card array in  div so there can be an overlay
-			this.div.appendChild(cards[cards.length-1].div);
+			this.div.appendChild(cards[0].div);
 
 			if(this.cards.length){
-				this.cards[this.cards.length-1].pushTop(cards[cards.length-1]);
+				this.cards[0].pushTop(cards[0]);
 			}
 			this.cards.push(...cards);
 			this.offsetCards();
