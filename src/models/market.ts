@@ -57,9 +57,10 @@ export class MarketPillar extends Pillar {
 			return;
 		}
 
+		var newIndex = this.cards.length - MARKET_FLIP_COUNT;
 		this.cards.slice(- MARKET_FLIP_COUNT)
 		.forEach((c, i) => { //refresh entire z index starting from last card added using MAX_FLIP_COUNT
-			c.div.style.zIndex = (this.cards.length+i).toString();
+			c.div.style.zIndex = (newIndex+i).toString();
 			if(i === 0) {
 				c.div.style.left = "0";
 			}
@@ -85,13 +86,12 @@ export class MarketPillar extends Pillar {
 			if(!x.isFaceup) x.flip()
 		} );
 		if(this.div.classList.contains('left')) {
-			//revers the nesting of cards popped
-			//TODO can probablu optimize this
+			//reverse the nesting of cards popped
+			//TODO can probably optimize this
 			for (let i = cardsPopped.length -1; i > 0; i--) {
 				const curr = cardsPopped[i];
 				const next = cardsPopped[i-1];
-				console.log('curr',curr.div);
-				console.log('next',next.div);
+
 				next.popTop();
 				curr.pushTop(next);
 			}

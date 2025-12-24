@@ -146,7 +146,7 @@ function dragAndDrop(card: Card) {
 		function (e) {
 			if(!card.isFaceup 
 				|| (div.closest(".market") 
-				&& card.onTop))
+				&& card.onTop)) //don't move if it's facedown or if it's in the market and not ontop
 			{
 				return;
 			}

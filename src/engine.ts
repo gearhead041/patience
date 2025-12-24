@@ -38,11 +38,14 @@ export function makeMove(move: move) : number
 {
 	var destCards = move.destination.cards;
 	var destCard: Card | null = null;
-		
+	var srcCard: Card;	
 	if(destCards.length) {
 		destCard = destCards[destCards.length -1];
 	}
-	
+	// if(move.source instanceof MarketPillar 
+	// 	&& move.source.div.classList.contains("right")) {
+	// 	srcCard = move.source.cards[]
+	// }
 	if(!(move.source instanceof MarketPillar && move.destination instanceof MarketPillar) 
 		&& !validateMove(move.source.cards[move.index],destCard))
 	{
