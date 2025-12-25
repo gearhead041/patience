@@ -1,4 +1,3 @@
-import type { Card } from "./card";
 import { Pillar } from "./pillar";
 
 export 	class SuitStack extends Pillar {

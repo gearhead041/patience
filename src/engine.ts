@@ -1,6 +1,6 @@
 import { Card } from "./models/card";
 import { Suit, Board, type move } from "./models/models";
-import { Market, MarketPillar } from "./models/Market";
+import { Market, MarketPillar } from "./models/market";
 import { Foundation, SuitStack } from "./models/foundations";
 
 
@@ -88,7 +88,7 @@ function validateMove(srcCard: Card, destCard: Card | null): boolean
 	return true;
 }
 
-function undoMove(move: move, count: number) : void
+export function undoMove(move: move, count: number) : void
 {
 	if (count <= 0) return;
 	var destLength = move.destination.cards!.length;
