@@ -75,7 +75,7 @@ export class MarketPillar extends Pillar {
 		var cardPopped: Card | null;
 		if (index === 0) {
 			cardPopped = this.cards![0];
-			this.div.removeChild(cardPopped.div); //TODO change for right pillar only allow top card to be popped
+			this.div.removeChild(cardPopped.div);
 		}
 		else {
 			var cardBelow = this.cards![index - 1]; //detach from lower card
