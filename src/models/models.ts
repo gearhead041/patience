@@ -1,5 +1,5 @@
-import type { Card } from "./card";
 import { Pillar } from "./pillar";
+
 
 export class Stack {
 	public onTop: Stack | null = null;
@@ -39,32 +39,7 @@ class Board {
 	}
 }
 
-class SuitStack extends Stack {
-	public suit: Suit;
-	public topCard: Card | null = null;
 
-	constructor(suit: Suit) {
-		super();
-		this.suit = suit;
-	}
-	public override pushTop(top: Card): void {
-		if (top.suit !== this.suit) {
-			throw Error("Wrong suit on suit stack");
-		}
-		if (this.topCard) {
-			this.topCard.pushTop(top);
-		}
-		this.topCard = top;
-	}
-}
-
-class Foundation {
-	public foundations: ReadonlyArray<SuitStack>;
-
-	constructor(suits: Suit[]) {
-		this.foundations = suits.map((x) => new SuitStack(x));
-	}
-}
 
 export interface move {
 	source: Pillar; // pillar being moved from 
@@ -72,4 +47,4 @@ export interface move {
 	index: number; // index of card being moved (in source)
 }
 
-export { Board, Suit, Foundation };
+export { Board, Suit };

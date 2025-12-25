@@ -1,6 +1,7 @@
 import { Card } from "./models/card";
 import { Suit, Board, type move } from "./models/models";
 import { Market, MarketPillar } from "./models/Market";
+import { Foundation, SuitStack } from "./models/foundations";
 
 
 export function initializeItems() {
@@ -25,11 +26,12 @@ export function initializeItems() {
 		pillar.cards![pillar.cards.length-1].flip();
 		count++;
 	}
+	var foundation = new Foundation(4);
 	market.draw();
 	return {
 		board,
 		market,
-		suits,
+		foundation,
 	}
 }
 
@@ -38,16 +40,23 @@ export function makeMove(move: move) : number
 {
 	var destCards = move.destination.cards;
 	var destCard: Card | null = null;
-	var srcCard: Card;	
+	var srcCard = move.source.cards[move.index];
 	if(destCards.length) {
 		destCard = destCards[destCards.length -1];
 	}
-	// if(move.source instanceof MarketPillar 
-	// 	&& move.source.div.classList.contains("right")) {
-	// 	srcCard = move.source.cards[]
-	// }
-	if(!(move.source instanceof MarketPillar && move.destination instanceof MarketPillar) 
-		&& !validateMove(move.source.cards[move.index],destCard))
+
+	if(move.destination instanceof SuitStack) {
+		if(((move.source.cards.length - 1) !== move.index) // must be last card from source and only one card
+			|| (destCard && (destCard.suit !== srcCard.suit  // suits must match
+				|| srcCard.value - destCard.value !== 1 // srccard value greater by one
+			)
+			) || !destCard && srcCard.value !== 1) { //start with an ace
+			console.log('invalid suitstack move');	
+			return 0;
+		}
+	}
+	else if(!(move.source instanceof MarketPillar && move.destination instanceof MarketPillar) 
+		&& !validateMove(srcCard,destCard))
 	{
 		return 0;
 	}
@@ -60,8 +69,11 @@ export function makeMove(move: move) : number
 
 function validateMove(srcCard: Card, destCard: Card | null): boolean
 {
+	
 	if(destCard == null && srcCard.value === 13) //kings only start an empty lane
 	{
+		console.log('valid king rule');
+		
 		return true;
 	}
 

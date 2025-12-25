@@ -48,13 +48,14 @@ generic cardback
 	display: flex;
 	width: 100%;
 	flex-direction: row;
+	justify-content: space-around;
 }
 
-.market .pillar {
+.market .pillar, .foundation .pillar{
 	margin-left: 1rem;
 }
 
-.market {
+.market, .foundation {
 	display: flex;
 	margin-bottom: 1rem;
 	flex-direction: row;

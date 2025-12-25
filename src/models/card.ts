@@ -101,11 +101,15 @@ function dragAndDrop(card: Card) {
 		event.preventDefault();
 		var srcPillar = div.closest(".pillar");
 		destPillar = getLowerPillarElem(event);
+		console.log('dest pillar',destPillar);
+		
 		div.style.zIndex = zIndex;
 		var moved = false;
 
 		if (destPillar && srcPillar !== destPillar) {
 			const dest = (destPillar as any).pillar as Pillar;
+			console.log('dest obj',dest);
+			
 			const src = (srcPillar as any).pillar as Pillar;
 			var result = makeMove({
 				source: src,
@@ -128,9 +132,10 @@ function dragAndDrop(card: Card) {
 			}
 			else {
 				//reset position here here if no movement is made
-				div.style.left= "";
+				div.style.left= "0";
 				div.style.top = card.isFaceup ? PILLAR_FACEUP_OFFSET : PILLAR_FACEDOWN_OFFSET;
-				if(div.parentElement?.classList.contains("pillar")) //first card on the pillar
+				if(div.parentElement?.classList.contains("pillar") //first card on the pillar
+				 || div.closest(".foundation")) // or is from the foundation
 				{
 					div.style.top = "0";
 				}
