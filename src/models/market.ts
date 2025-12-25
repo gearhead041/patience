@@ -101,7 +101,7 @@ export class MarketPillar extends Pillar {
 
 	public override push(cards: Card[]): void {
 		if(this.div.classList.contains('right')) {
-			cards.reverse();
+			cards.reverse(); //TODO fix reversal bug on reset of empty market
 			console.log('cards',cards);
 			//put each card array in  div so there can be an overlay
 			this.div.appendChild(cards[0].div);
