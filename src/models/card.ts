@@ -9,7 +9,7 @@ export class Card extends Stack {
 	public isFaceup: boolean;
 	public declare onTop: Card | null; 
 	public div!: HTMLDivElement;
-	private textNode!: Text;
+	private textNode!: HTMLDivElement;
 
 	constructor(value: number, suit: Suit) {
 		super();
@@ -39,7 +39,9 @@ export class Card extends Stack {
 		}
 		else {
 			this.div.classList.replace("facedown", "faceup");
-			this.textNode = document.createTextNode(this.value.toString());
+			this.textNode = document.createElement("div");
+			this.textNode.classList.add("card-face");
+			this.textNode.textContent = this.value.toString();
 			this.div.appendChild(this.textNode);
 		}
 		this.isFaceup = !this.isFaceup;
