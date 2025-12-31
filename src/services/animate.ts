@@ -102,18 +102,16 @@ export class Animate implements iRender, iAnimate {
                 }
 
                 if (pileType === "tableau") {
-
                     if (i > 0) {
                         cardDiv.style.top = isFaceup
                             ? PILLAR_FACEUP_OFFSET : PILLAR_FACEDOWN_OFFSET;
                     }
                     else {
-                        cardDiv.style.top = "0";
+                        cardDiv.style.top = "0px";
                     }
                 }
 
             });
-
             pileDiv.appendChild(cardDivs[0]);
             cardDivs.reduce((prev, curr) => prev.appendChild(curr));
         }
@@ -186,7 +184,7 @@ export class Animate implements iRender, iAnimate {
                 {
                     div.style.left = MARKET_OFFSET;
                     //reset differently for cards that begin a slice on the right pillar
-                    if (div.parentElement?.classList.contains("right")) {
+                    if (originalParent?.classList.contains("right")) {
                         div.style.left = "0";
                     }
                     div.style.top = "0";
@@ -194,11 +192,17 @@ export class Animate implements iRender, iAnimate {
                 else {
                     //reset position here here if no movement is made
                     div.style.left = "0";
-                    div.style.top = div.classList.contains("faceup") ? PILLAR_FACEUP_OFFSET : PILLAR_FACEDOWN_OFFSET;
-                    if (div.parentElement?.classList.contains("pillar") //first card on the pillar
+                    console.log('reset reache hered');
+                    if (originalParent?.classList.contains("pillar") //first card on the pillar
                         || div.closest(".foundation")) // or is from the foundation
                     {
-                        div.style.top = "0";
+                        console.log('parent element is pillar');
+                        
+                        div.style.top = "0px";
+                    }
+                    else {
+                        div.style.top = div.classList.contains("faceup")
+                         ? PILLAR_FACEUP_OFFSET : PILLAR_FACEDOWN_OFFSET;
                     }
                 }
                 console.log('original parent',originalParent);
@@ -217,6 +221,7 @@ export class Animate implements iRender, iAnimate {
                 if (div.classList.contains("faceup")) {
                     offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
                     zIndex = div.style.zIndex;
+                    div.style.zIndex = "200";
                     originalParent = div.parentElement as HTMLDivElement;
                     div.classList.add("dragging");
                     const rect = div.getBoundingClientRect();
