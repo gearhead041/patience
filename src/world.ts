@@ -7,7 +7,7 @@ function shuffle<T>(array: T[], rng = Math.random) {
   }
 }
 
-export class EntityManager {
+export class World {
     nextEntity = 0;
     // card components
     cards = new Map<Entity, CardData>();
@@ -44,7 +44,7 @@ export class EntityManager {
 
 
 
-var world = new EntityManager();
+var world = new World();
 
 //create piles
 const tableaus = Array.from({ length: 7 }, () =>

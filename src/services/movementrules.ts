@@ -1,12 +1,12 @@
 import type { Move } from "../components";
-import type { EntityManager } from "../world";
+import type { World } from "../world";
 import type { IMovement } from "./interface/imovement";
 
 export class MovementService implements IMovement {
-    private world: EntityManager;
+    private world: World;
     public moves: Move[];
 
-    constructor(world: EntityManager) {
+    constructor(world: World) {
         this.world = world;
         this.moves = [];
     }
@@ -20,6 +20,13 @@ export class MovementService implements IMovement {
         const srcPileCards = this.world.pileCards.get(srcPile)!.cards;
         const destPileCards = this.world.pileCards.get(move.dest)!.cards;
         const slicedArray = srcPileCards.splice(srcIndex);
+
+        //flip last card
+        const topsrcIdx= srcPileCards[srcPileCards.length-1];
+
+        if(topsrcIdx !== null ) {
+           this.world.faceUp.set(topsrcIdx,{value:true})!;
+        }
 
         destPileCards.push(...slicedArray);
         //update the card's location in the world

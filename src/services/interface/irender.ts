@@ -1,7 +1,7 @@
 import type { Entity, EntityName } from "../../components";
 
 export interface iRender {
-    sprites: Map<Entity,HTMLDivElement>;
+    sprites: WeakMap<HTMLDivElement,Entity>;
     createEntitySprite(entity: Entity,entityName: EntityName): HTMLDivElement;
 }
 
