@@ -13,7 +13,9 @@ generic cardback here
  */
  background-color: aqua;
 }
-
+#drag-layer {
+	/* pointer-events: none; */
+}
 .card-face {
 	font-family: 'Bodoni Moda',serif;
 	/* padding-left: .2rem;
@@ -38,6 +40,11 @@ generic cardback here
 .card.faceup.diamond {
 	background-color: rgb(172, 15, 15);
 	color: black;
+}
+
+.dragging {
+    pointer-events: auto;
+    position: absolute;
 }
 
 .pillar {

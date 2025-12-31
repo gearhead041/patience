@@ -4,6 +4,12 @@ import './style.css'
 import { shareCards, shuffle, World } from './world';
 
 var app = document.querySelector<HTMLDivElement>('#app')!;
+
+//setup drag layer
+var dragLayer = document.createElement('div')!;
+dragLayer.id = "drag-layer"
+app.appendChild(dragLayer);
+
 var top = document.createElement("div");
 top.classList.add("top");
 

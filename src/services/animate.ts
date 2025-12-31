@@ -90,6 +90,7 @@ export class Animate implements iRender, iAnimate {
                 cardDiv.style.zIndex = (i).toString();
                 cardDiv.style.left = ""; // Reset drag position to snap to parent/pillar
                 cardDiv.style.right = "";
+                cardDiv.style.top = "0"
                 var isFaceup = this.world.faceUp.get(c)!.value;
 
                 if (isFaceup && cardDiv.classList.contains("facedown")) {
@@ -144,9 +145,13 @@ export class Animate implements iRender, iAnimate {
     private makeDraggable(div: HTMLDivElement) {
         var offset = [0, 0];
         var zIndex: string;
+        var originalParent: HTMLDivElement;
+
+        var dragLayer = document.querySelector<HTMLDivElement>("#drag-layer")!;
 
         const onMouseMove = (event: MouseEvent) => {
             event.preventDefault();
+
             const mousePosition = {
                 x: event.clientX,
                 y: event.clientY,
@@ -196,8 +201,10 @@ export class Animate implements iRender, iAnimate {
                         div.style.top = "0";
                     }
                 }
+                console.log('original parent',originalParent);
+                originalParent.appendChild(div);
+                div.classList.remove("dragging");
             }
-
             document.removeEventListener("mousemove", onMouseMove);
             document.removeEventListener("mouseup", onMouseUp);
         };
@@ -205,10 +212,23 @@ export class Animate implements iRender, iAnimate {
         div.addEventListener(
             "mousedown",
             (e: MouseEvent) => {
+                e.preventDefault();
+                e.stopPropagation();
                 if (div.classList.contains("faceup")) {
                     offset = [div.offsetLeft - e.clientX, div.offsetTop - e.clientY];
                     zIndex = div.style.zIndex;
-                    div.style.zIndex = "1000"; //make sure it's on top while dragging
+                    originalParent = div.parentElement as HTMLDivElement;
+                    div.classList.add("dragging");
+                    const rect = div.getBoundingClientRect();
+                    offset = [
+                        rect.left - e.clientX,
+                        rect.top - e.clientY
+                    ];
+                    div.style.left = rect.left + "px";
+                    div.style.top = rect.top + "px";
+                    div.style.width = rect.width + "px";
+                    div.style.height = rect.height + "px";
+                    dragLayer.append(div);
                     document.addEventListener("mousemove", onMouseMove);
                     document.addEventListener("mouseup", onMouseUp);
                 }
