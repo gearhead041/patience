@@ -23,6 +23,7 @@ generic cardback here
 	width: inherit;
 	height: inherit;
 }
+
 .card.faceup.clubs {
 	background-color: black;
 	color: white;

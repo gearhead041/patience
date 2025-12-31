@@ -1,6 +1,6 @@
 // Card data
 type SuitColor = "Red" | "Black";
-type SuitShape = "Heart" | "Spade" | "Diamond" | "Club";
+type SuitShape = "Heart" | "Spade" | "Diamond" | "Clubs";
 
 interface Suit {
   color: SuitColor;

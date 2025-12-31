@@ -16,6 +16,8 @@ export class MovementService implements IMovement {
             return false;
         }
 
+        //TODO handle default movement by click 
+        //from animation have click event listener
         const { pile: srcPile, index: srcIndex } = this.world.inPile.get(move.card)!;
         const srcPileCards = this.world.pileCards.get(srcPile)!.cards;
         const destPileCards = this.world.pileCards.get(move.dest)!.cards;
@@ -54,7 +56,7 @@ export class MovementService implements IMovement {
                 }
                 return topCardPile.rank - srcCard.rank === 1
                     && topCardPile.suit.color !== srcCard.suit.color;
-            case "foundation":
+            case "foundation": //TODO create default slice type for stock and waste
                 if (!topCardPile) {
                     return srcCard.rank === 1;
                 }
