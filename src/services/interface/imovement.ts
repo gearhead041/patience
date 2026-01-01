@@ -1,7 +1,7 @@
-import type { Move } from "../../components";
+import type { Move, MoveHistory } from "../../components";
 
 export interface IMovement {
-    moves: Move[];
+    moves: MoveHistory[];
     moveCard(move: Move): boolean;
     undo(): void;
 }
