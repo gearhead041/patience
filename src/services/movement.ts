@@ -1,5 +1,5 @@
 import type { Move } from "../components";
-import { MARKET_FLIP_COUNT } from "../constants";
+import { MARKET_FLIP_COUNT } from "../settings";
 import type { World } from "../world";
 import type { IMovement } from "./interface/imovement";
 

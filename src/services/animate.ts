@@ -4,7 +4,7 @@ import {
 	MARKET_OFFSET,
 	PILLAR_FACEDOWN_OFFSET,
 	PILLAR_FACEUP_OFFSET,
-} from "../constants";
+} from "../settings";
 import type { World } from "../world";
 import type { IMovement } from "./interface/imovement";
 import type { iRender } from "./interface/irender";
