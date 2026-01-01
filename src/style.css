@@ -17,13 +17,8 @@ generic cardback here
 	pointer-events: none;
 }
 .card-face {
-	font-family: 'Bodoni Moda',serif;
-	/* padding-left: .2rem;
-	padding-top: .2rem; */
+	/* font-family: 'Bodoni Moda',serif; */
 	font-size: larger;
-	text-align: center;
-	width: inherit;
-	height: inherit;
 }
 
 .card.faceup.clubs {

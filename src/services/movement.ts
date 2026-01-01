@@ -25,8 +25,6 @@ export class MovementService implements IMovement {
 		const destPileCards = this.world.pileCards.get(move.dest)!.cards;
 		switch (srcPileType) {
 			case "stock":
-				console.log("reached here");
-		
 				const spliceIdx = Math.min(srcPileCards.length, MARKET_FLIP_COUNT);
 				var slicedArray = srcPileCards.splice(srcPileCards.length - spliceIdx);
 				slicedArray.reverse();
@@ -37,6 +35,18 @@ export class MovementService implements IMovement {
 					this.world.inPile.set(c, {
 						pile: move.dest,
 						index: destPileCards.length - slicedArray.length + i
+					})
+				});
+				break;
+			case "waste":
+				var newCards = srcPileCards.splice(0);
+				newCards.reverse();
+				destPileCards.push(...newCards);
+				destPileCards.forEach((c, i) => {
+					this.world.faceUp.set(c, { value: false });
+					this.world.inPile.set(c, {
+						pile: move.dest,
+						index: i
 					})
 				});
 				break;

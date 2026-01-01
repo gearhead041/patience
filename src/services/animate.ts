@@ -56,7 +56,7 @@ export class Animate implements iRender {
 		var pileCards = this.world.pileCards.get(entity)!.cards;
 		var cardDivs = pileCards.map((x) => this.entityToSprites.get(x)!);
 		var pileType = this.world.pileType.get(entity)!.kind;
-
+		if (!pileCards.length) return;
 		switch (pileType) {
 			case "waste":
 				console.log("update waste pile");
@@ -93,55 +93,57 @@ export class Animate implements iRender {
 				);
 				addedArray.reduce((p, c) => p.appendChild(c));
 				break;
+
 			default:
-				if (pileCards.length) {
-					pileCards.forEach((c, i) => {
-						var cardDiv = this.entityToSprites.get(c)!;
-						var cardData = this.world.cards.get(c)!;
-						cardDiv.style.zIndex = i.toString();
-						cardDiv.style.left = ""; // Reset drag position to snap to parent/pillar
-						cardDiv.style.right = "";
-						cardDiv.style.top = "0";
-						var isFaceup = this.world.faceUp.get(c)!.value;
+				pileCards.forEach((c, i) => {
+					var cardDiv = this.entityToSprites.get(c)!;
+					var cardData = this.world.cards.get(c)!;
+					cardDiv.style.zIndex = i.toString();
+					cardDiv.style.left = ""; // Reset drag position to snap to parent/pillar
+					cardDiv.style.right = "";
+					cardDiv.style.top = "0";
+					var isFaceup = this.world.faceUp.get(c)!.value;
 
-						if (
-							isFaceup &&
-							cardDiv.classList.contains("facedown")
-						) {
-							cardDiv.classList.replace("facedown", "faceup");
-							var textNode = document.createElement("div");
-							textNode.classList.add("card-face");
-							textNode.textContent = cardData.rank.toString();
-							cardDiv.appendChild(textNode);
-						}
+					if (isFaceup && cardDiv.classList.contains("facedown")) {
+						cardDiv.classList.replace("facedown", "faceup");
+						var textNode = document.createElement("div");
+						textNode.classList.add("card-face");
+						textNode.textContent = cardData.rank.toString();
+						cardDiv.appendChild(textNode);
+					}
 
-						if (pileType === "tableau") {
-							if (i > 0) {
-								cardDiv.style.top = isFaceup
-									? PILLAR_FACEUP_OFFSET
-									: PILLAR_FACEDOWN_OFFSET;
-							} else {
-								cardDiv.style.top = "0px";
-							}
+					if (!isFaceup && cardDiv.classList.contains("faceup")) {
+						var cardFace = cardDiv.querySelector<HTMLDivElement>(".card-face");
+						cardFace?.remove();
+						cardDiv.classList.replace("faceup", "facedown");
+					}
+
+					if (pileType === "tableau") {
+						if (i > 0) {
+							cardDiv.style.top = isFaceup
+								? PILLAR_FACEUP_OFFSET
+								: PILLAR_FACEDOWN_OFFSET;
+						} else {
+							cardDiv.style.top = "0px";
 						}
-					});
-					pileDiv.appendChild(cardDivs[0]);
-					cardDivs.reduce((prev, curr) => prev.appendChild(curr));
-				}
+					}
+				});
+				pileDiv.appendChild(cardDivs[0]);
+				cardDivs.reduce((prev, curr) => prev.appendChild(curr));
 		}
 	}
 
 	private makeMove(
-		src: HTMLDivElement,
-		dest: HTMLDivElement | null
+		srcCardDiv: HTMLDivElement,
+		destPileDiv: HTMLDivElement | null
 	): boolean {
 		try {
-			if (!dest) {
+			if (!destPileDiv) {
 				console.log("no lower element found");
 				return false;
 			}
-			var card = this.sprites.get(src)!;
-			var destPile = this.sprites.get(dest)!;
+			var card = this.sprites.get(srcCardDiv)!;
+			var destPile = this.sprites.get(destPileDiv)!;
 			var srcPile = this.world.inPile.get(card)!.pile;
 			const move: Move = {
 				card: card,
@@ -198,8 +200,8 @@ export class Animate implements iRender {
 
 		const onMouseUp = (event: MouseEvent) => {
 			event.preventDefault();
+			event.stopPropagation();
 			div.style.zIndex = zIndex;
-
 			///  get entities
 			var lowerElem = getLowerPillarElem(event) ?? null;
 			var success = this.makeMove(div, lowerElem);
@@ -252,14 +254,17 @@ export class Animate implements iRender {
 
 				//only allow top card on waste to be dragged
 				if (div.closest(".waste")) {
-					var wasteDiv = document.querySelector<HTMLDivElement>(".waste")!;
+					var wasteDiv =
+						document.querySelector<HTMLDivElement>(".waste")!;
 					var card = this.sprites.get(div)!;
 					var waste = this.sprites.get(wasteDiv)!;
 					var wasteCards = this.world.pileCards.get(waste)!.cards;
-					if (!wasteCards.length || card !== wasteCards[wasteCards.length - 1]) {
+					if (
+						!wasteCards.length ||
+						card !== wasteCards[wasteCards.length - 1]
+					) {
 						return;
 					}
-					
 				}
 
 				//prevent snapping when moved to drag layer
@@ -286,16 +291,27 @@ export class Animate implements iRender {
 			switch (pile.kind) {
 				case "stock":
 					div.addEventListener("click", () => {
-						//move to waste if any cards move from stock to waste if empty
 						var wasteDiv =
 							document.querySelector<HTMLDivElement>(".waste")!;
-						var srcCards = this.world.pileCards.get(entity)!.cards;
-						var srcCardDiv = this.entityToSprites.get(
-							srcCards[srcCards.length - 1]
-						)!;
-						this.makeMove(srcCardDiv, wasteDiv);
+						var stockCards =
+							this.world.pileCards.get(entity)!.cards;
+						if (stockCards.length) {
+							var stockCardDiv = this.entityToSprites.get(
+								stockCards[stockCards.length - 1]
+							)!;
+							return this.makeMove(stockCardDiv, wasteDiv);
+						}
+						var waste = this.sprites.get(wasteDiv)!;
+						var wasteCards = this.world.pileCards.get(waste)!.cards;
+						if (wasteCards.length) {
+							var topWasteCard =
+								wasteCards[wasteCards.length - 1];
+							var topWasteCardDiv =
+								this.entityToSprites.get(topWasteCard)!;
+							this.makeMove(topWasteCardDiv, div);
+						}
 					});
-					return;
+					break;
 				default:
 					break;
 			}
