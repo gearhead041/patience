@@ -89,7 +89,7 @@ export class Animate implements iRender {
 				});
 
 				pileDiv.appendChild(
-					cardDivs[cardDivs.length - MARKET_FLIP_COUNT]
+					cardDivs[cardDivs.length - stepBack]
 				);
 				addedArray.reduce((p, c) => p.appendChild(c));
 				break;
@@ -207,21 +207,18 @@ export class Animate implements iRender {
 			var success = this.makeMove(div, lowerElem);
 			if (!lowerElem || !success) {
 				console.log("reached reset");
-
+				//reset position here if no movement is made
 				if (originalParent.closest(".market")) {
 					//reset differently when src is market pillar
 					console.log("reached market reset");
-
+					div.style.top = "0";
 					div.style.left = MARKET_OFFSET;
 					//reset differently for cards that begin a slice on the right pillar
 					if (div.closest("right")) {
 						console.log("reset here");
-
 						div.style.left = originalLeft;
 					}
-					div.style.top = "0";
 				} else {
-					//reset position here here if no movement is made
 					div.style.left = "0";
 					if (
 						originalParent?.classList.contains("pillar") || //first card on the pillar
@@ -235,6 +232,7 @@ export class Animate implements iRender {
 							: PILLAR_FACEDOWN_OFFSET;
 					}
 				}
+				//remove from drag layer and return to parent
 				originalParent.appendChild(div);
 				div.classList.remove("dragging");
 			}

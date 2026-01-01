@@ -25,7 +25,7 @@ export class MovementService implements IMovement {
 		const destPileCards = this.world.pileCards.get(move.dest)!.cards;
 		switch (srcPileType) {
 			case "stock":
-				const spliceIdx = Math.min(srcPileCards.length, MARKET_FLIP_COUNT);
+				var spliceIdx = Math.min(srcPileCards.length, MARKET_FLIP_COUNT);
 				var slicedArray = srcPileCards.splice(srcPileCards.length - spliceIdx);
 				slicedArray.reverse();
 				destPileCards.push(...slicedArray);
@@ -39,11 +39,14 @@ export class MovementService implements IMovement {
 				});
 				break;
 			case "waste":
-				var newCards = srcPileCards.splice(0);
-				newCards.reverse();
+				var destPileType = this.world.pileType.get(move.dest)!.kind;
+
+				var spliceIdx= destPileType === "stock" ? 0 : srcPileCards.length - 1;
+				var newCards = srcPileCards.splice(spliceIdx);
+				if(destPileType === "stock") newCards.reverse();
 				destPileCards.push(...newCards);
-				destPileCards.forEach((c, i) => {
-					this.world.faceUp.set(c, { value: false });
+				newCards.forEach((c, i) => {
+					this.world.faceUp.set(c, { value: destPileType !== "stock"});
 					this.world.inPile.set(c, {
 						pile: move.dest,
 						index: i
@@ -57,7 +60,7 @@ export class MovementService implements IMovement {
 				const topsrcIdx= srcPileCards[srcPileCards.length-1];
 
 				if(topsrcIdx !== null ) {
-				this.world.faceUp.set(topsrcIdx,{value:true})!;
+					this.world.faceUp.set(topsrcIdx,{value:true})!;
 				}
 				destPileCards.push(...slicedArray);
 				//update the card's location in the world
