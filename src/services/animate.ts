@@ -60,11 +60,16 @@ export class Animate implements iRender {
 		switch (pileType) {
 			case "waste":
 				console.log("update waste pile");
-				var stepBack = Math.min(cardDivs.length,MARKET_FLIP_COUNT)
+				var stepBack = Math.min(cardDivs.length, MARKET_FLIP_COUNT);
 				var addedArray = cardDivs.slice(-stepBack);
 				addedArray.forEach((c, i) => {
-					var card = pileCards[pileCards.length - addedArray.length + i];
-					c.style.zIndex = (pileCards.length - addedArray.length + i).toString();
+					var card =
+						pileCards[pileCards.length - addedArray.length + i];
+					c.style.zIndex = (
+						pileCards.length -
+						addedArray.length +
+						i
+					).toString();
 					if (i === 0) {
 						c.style.left = "0";
 					}
@@ -126,11 +131,13 @@ export class Animate implements iRender {
 		}
 	}
 
-
-	private makeMove(src: HTMLDivElement, dest: HTMLDivElement | null): boolean {
+	private makeMove(
+		src: HTMLDivElement,
+		dest: HTMLDivElement | null
+	): boolean {
 		try {
 			if (!dest) {
-				console.log('no lower element found');
+				console.log("no lower element found");
 				return false;
 			}
 			var card = this.sprites.get(src)!;
@@ -197,17 +204,17 @@ export class Animate implements iRender {
 			var lowerElem = getLowerPillarElem(event) ?? null;
 			var success = this.makeMove(div, lowerElem);
 			if (!lowerElem || !success) {
-				console.log('reached reset');
-				
+				console.log("reached reset");
+
 				if (originalParent.closest(".market")) {
 					//reset differently when src is market pillar
-					console.log('reached market reset');
-					
+					console.log("reached market reset");
+
 					div.style.left = MARKET_OFFSET;
 					//reset differently for cards that begin a slice on the right pillar
 					if (div.closest("right")) {
-						console.log('reset here');
-						
+						console.log("reset here");
+
 						div.style.left = originalLeft;
 					}
 					div.style.top = "0";
@@ -237,15 +244,24 @@ export class Animate implements iRender {
 			e.preventDefault();
 			e.stopPropagation();
 			if (div.classList.contains("faceup")) {
-				//only allow top card on waste to be dragged
-				
-
-				//save original data
+				//save original data for potential reset
 				zIndex = div.style.zIndex;
 				originalParent = div.parentElement as HTMLDivElement;
 				originalLeft = div.style.left;
 				div.style.zIndex = "200";
-				
+
+				//only allow top card on waste to be dragged
+				if (div.closest(".waste")) {
+					var wasteDiv = document.querySelector<HTMLDivElement>(".waste")!;
+					var card = this.sprites.get(div)!;
+					var waste = this.sprites.get(wasteDiv)!;
+					var wasteCards = this.world.pileCards.get(waste)!.cards;
+					if (!wasteCards.length || card !== wasteCards[wasteCards.length - 1]) {
+						return;
+					}
+					
+				}
+
 				//prevent snapping when moved to drag layer
 				div.classList.add("dragging");
 				const rect = div.getBoundingClientRect();
