@@ -19,14 +19,14 @@ export class MovementService implements IMovement {
 		
 		//TODO handle default movement by click
 		const { pile: srcPile, index: srcIndex } = this.world.inPile.get(move.card)!;
-		var srcPileType = this.world.pileType.get(srcPile)!.kind;
+		const srcPileType = this.world.pileType.get(srcPile)!.kind;
 		//from animation have click event listener
 		const srcPileCards = this.world.pileCards.get(srcPile)!.cards;
 		const destPileCards = this.world.pileCards.get(move.dest)!.cards;
 		switch (srcPileType) {
 			case "stock":
-				var spliceIdx = Math.min(srcPileCards.length, MARKET_FLIP_COUNT);
-				var slicedArray = srcPileCards.splice(srcPileCards.length - spliceIdx);
+				const spliceIdx = Math.min(srcPileCards.length, MARKET_FLIP_COUNT);
+				const slicedArray = srcPileCards.splice(srcPileCards.length - spliceIdx);
 				slicedArray.reverse();
 				destPileCards.push(...slicedArray);
 				//update cards locations and turn them all face up
@@ -39,35 +39,35 @@ export class MovementService implements IMovement {
 				});
 				break;
 			case "waste":
-				var destPileType = this.world.pileType.get(move.dest)!.kind;
+				const destPileType = this.world.pileType.get(move.dest)!.kind;
 
-				var spliceIdx= destPileType === "stock" ? 0 : srcPileCards.length - 1;
-				var newCards = srcPileCards.splice(spliceIdx);
+				const wasteSpliceIdx= destPileType === "stock" ? 0 : srcPileCards.length - 1;
+				const newCards = srcPileCards.splice(wasteSpliceIdx);
 				if(destPileType === "stock") newCards.reverse();
 				destPileCards.push(...newCards);
 				newCards.forEach((c, i) => {
 					this.world.faceUp.set(c, { value: destPileType !== "stock"});
 					this.world.inPile.set(c, {
 						pile: move.dest,
-						index: i
+						index: destPileCards.length - newCards.length + i
 					})
 				});
 				break;
 			default:
-				var slicedArray = srcPileCards.splice(srcIndex);
+				const tableauSlice = srcPileCards.splice(srcIndex);
 
 				//flip last card
 				const topsrcIdx= srcPileCards[srcPileCards.length-1];
 
-				if(topsrcIdx !== null ) {
+				if(topsrcIdx !== undefined) {
 					this.world.faceUp.set(topsrcIdx,{value:true})!;
 				}
-				destPileCards.push(...slicedArray);
+				destPileCards.push(...tableauSlice);
 				//update the card's location in the world
-				slicedArray.forEach((c, i) => 
+				tableauSlice.forEach((c, i) => 
 					this.world.inPile.set(c, { 
 						pile: move.dest, 
-						index: destPileCards.length - slicedArray.length + i 
+						index: destPileCards.length - tableauSlice.length + i 
 					}));
 				break;
 		}
@@ -77,10 +77,10 @@ export class MovementService implements IMovement {
     }
 
     validateMove(move: Move) {
-        var srcCard = this.world.cards.get(move.card)!;
-        var destPileType = this.world.pileType.get(move.dest)!.kind;
-        var pileCards = this.world.pileCards.get(move.dest)!.cards;
-        var topCardPile = this.world.cards.get(pileCards[pileCards.length - 1]);
+        const srcCard = this.world.cards.get(move.card)!;
+        const destPileType = this.world.pileType.get(move.dest)!.kind;
+        const pileCards = this.world.pileCards.get(move.dest)!.cards;
+        const topCardPile = this.world.cards.get(pileCards[pileCards.length - 1]);
 
         //validate move
         switch (destPileType) {
@@ -97,33 +97,36 @@ export class MovementService implements IMovement {
                 return srcCard.rank - topCardPile.rank === 1
                     && srcCard.suit === topCardPile.suit;
             case "stock": //moving to stock can only come from waste
-                var srcPile = this.world.inPile.get(move.card)!.pile;
-                var srcPileType = this.world.pileType.get(srcPile)!.kind;
-                return srcPileType == "waste";
+                if (pileCards.length > 0) return false;
+                const stockSrcPile = this.world.inPile.get(move.card)!.pile;
+                const stockSrcPileType = this.world.pileType.get(stockSrcPile)!.kind;
+                return stockSrcPileType == "waste";
             case "waste": // and vice versa
-                var srcPile = this.world.inPile.get(move.card)!.pile;
-                var srcPileType = this.world.pileType.get(srcPile)!.kind;
-                return srcPileType == "stock";
+                const wasteSrcPile = this.world.inPile.get(move.card)!.pile;
+                const wasteSrcPileType = this.world.pileType.get(wasteSrcPile)!.kind;
+                return wasteSrcPileType == "stock";
 
             default:
                 console.log("the hell?!");
-                false;
+                return false;
         }
     }
 
     undo() {
-        const lastMove = this.moves[this.moves.length - 1];
-        if(!lastMove) {
-            return;
-        }
+        // TODO: Implement proper undo. 
+        // Current implementation is broken because 'Move' does not store the source pile.
+        // const lastMove = this.moves[this.moves.length - 1];
+        // if(!lastMove) {
+        //     return;
+        // }
 
-        //destination is the source (where the card is now)
-        const destPile = this.world.inPile.get(lastMove.card)!.pile;
-        const reverseMove: Move = {
-            dest: destPile,
-            card: lastMove.card
-        }
-        this.moveCard(reverseMove,false);
+        // //destination is the source (where the card is now)
+        // const destPile = this.world.inPile.get(lastMove.card)!.pile;
+        // const reverseMove: Move = {
+        //     dest: destPile,
+        //     card: lastMove.card
+        // }
+        // this.moveCard(reverseMove,false);
     }
 
 }

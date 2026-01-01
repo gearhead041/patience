@@ -28,10 +28,10 @@ export class Animate implements iRender {
 	}
 
 	createEntitySprite(entity: Entity, entityName: EntityName): HTMLDivElement {
-		var div = document.createElement("div");
+		const div = document.createElement("div");
 		switch (entityName) {
 			case "Card":
-				var cardData = this.world.cards.get(entity)!;
+				const cardData = this.world.cards.get(entity)!;
 				div.className = "card";
 				div.classList.add(cardData.suit.shape.toLowerCase());
 				div.classList.add("facedown");
@@ -39,7 +39,7 @@ export class Animate implements iRender {
 				break;
 			case "Pile":
 				div.classList.add("pillar");
-				var pileType = this.world.pileType.get(entity)!.kind;
+				const pileType = this.world.pileType.get(entity)!.kind;
 				div.classList.add(pileType);
 				break;
 			default:
@@ -52,18 +52,18 @@ export class Animate implements iRender {
 	}
 
 	updatePileSprite(entity: Entity) {
-		var pileDiv = this.entityToSprites.get(entity)!;
-		var pileCards = this.world.pileCards.get(entity)!.cards;
-		var cardDivs = pileCards.map((x) => this.entityToSprites.get(x)!);
-		var pileType = this.world.pileType.get(entity)!.kind;
+		const pileDiv = this.entityToSprites.get(entity)!;
+		const pileCards = this.world.pileCards.get(entity)!.cards;
+		const cardDivs = pileCards.map((x) => this.entityToSprites.get(x)!);
+		const pileType = this.world.pileType.get(entity)!.kind;
 		if (!pileCards.length) return;
 		switch (pileType) {
 			case "waste":
 				console.log("update waste pile");
-				var stepBack = Math.min(cardDivs.length, MARKET_FLIP_COUNT);
-				var addedArray = cardDivs.slice(-stepBack);
+				const stepBack = Math.min(cardDivs.length, MARKET_FLIP_COUNT);
+				const addedArray = cardDivs.slice(-stepBack);
 				addedArray.forEach((c, i) => {
-					var card =
+					const card =
 						pileCards[pileCards.length - addedArray.length + i];
 					c.style.zIndex = (
 						pileCards.length -
@@ -77,11 +77,11 @@ export class Animate implements iRender {
 						c.style.left = MARKET_OFFSET;
 					}
 					c.style.top = "0";
-					var cardData = this.world.cards.get(card)!;
-					var isFaceup = this.world.faceUp.get(card)!.value;
+					const cardData = this.world.cards.get(card)!;
+					const isFaceup = this.world.faceUp.get(card)!.value;
 					if (isFaceup && c.classList.contains("facedown")) {
 						c.classList.replace("facedown", "faceup");
-						var textNode = document.createElement("div");
+						const textNode = document.createElement("div");
 						textNode.classList.add("card-face");
 						textNode.textContent = cardData.rank.toString();
 						c.appendChild(textNode);
@@ -96,24 +96,24 @@ export class Animate implements iRender {
 
 			default:
 				pileCards.forEach((c, i) => {
-					var cardDiv = this.entityToSprites.get(c)!;
-					var cardData = this.world.cards.get(c)!;
+					const cardDiv = this.entityToSprites.get(c)!;
+					const cardData = this.world.cards.get(c)!;
 					cardDiv.style.zIndex = i.toString();
 					cardDiv.style.left = ""; // Reset drag position to snap to parent/pillar
 					cardDiv.style.right = "";
 					cardDiv.style.top = "0";
-					var isFaceup = this.world.faceUp.get(c)!.value;
+					const isFaceup = this.world.faceUp.get(c)!.value;
 
 					if (isFaceup && cardDiv.classList.contains("facedown")) {
 						cardDiv.classList.replace("facedown", "faceup");
-						var textNode = document.createElement("div");
+						const textNode = document.createElement("div");
 						textNode.classList.add("card-face");
 						textNode.textContent = cardData.rank.toString();
 						cardDiv.appendChild(textNode);
 					}
 
 					if (!isFaceup && cardDiv.classList.contains("faceup")) {
-						var cardFace = cardDiv.querySelector<HTMLDivElement>(".card-face");
+						const cardFace = cardDiv.querySelector<HTMLDivElement>(".card-face");
 						cardFace?.remove();
 						cardDiv.classList.replace("faceup", "facedown");
 					}
@@ -142,14 +142,14 @@ export class Animate implements iRender {
 				console.log("no lower element found");
 				return false;
 			}
-			var card = this.sprites.get(srcCardDiv)!;
-			var destPile = this.sprites.get(destPileDiv)!;
-			var srcPile = this.world.inPile.get(card)!.pile;
+			const card = this.sprites.get(srcCardDiv)!;
+			const destPile = this.sprites.get(destPileDiv)!;
+			const srcPile = this.world.inPile.get(card)!.pile;
 			const move: Move = {
 				card: card,
 				dest: destPile,
 			};
-			var result = this.movementService.moveCard(move);
+			const result = this.movementService.moveCard(move);
 			if (!result) {
 				return false;
 			}
@@ -164,11 +164,11 @@ export class Animate implements iRender {
 
 	///add draggable event listener
 	private addDragEventListener(div: HTMLDivElement) {
-		var offset = [0, 0];
-		var zIndex: string;
-		var originalParent: HTMLDivElement;
-		var originalLeft: string;
-		var dragLayer = document.querySelector<HTMLDivElement>("#drag-layer")!;
+		let offset = [0, 0];
+		let zIndex: string;
+		let originalParent: HTMLDivElement;
+		let originalLeft: string;
+		const dragLayer = document.querySelector<HTMLDivElement>("#drag-layer")!;
 
 		const onMouseMove = (event: MouseEvent) => {
 			event.preventDefault();
@@ -203,8 +203,8 @@ export class Animate implements iRender {
 			event.stopPropagation();
 			div.style.zIndex = zIndex;
 			///  get entities
-			var lowerElem = getLowerPillarElem(event) ?? null;
-			var success = this.makeMove(div, lowerElem);
+			const lowerElem = getLowerPillarElem(event) ?? null;
+			const success = this.makeMove(div, lowerElem);
 			if (!lowerElem || !success) {
 				console.log("reached reset");
 				//reset position here if no movement is made
@@ -214,7 +214,7 @@ export class Animate implements iRender {
 					div.style.top = "0";
 					div.style.left = MARKET_OFFSET;
 					//reset differently for cards that begin a slice on the right pillar
-					if (div.closest("right")) {
+					if (div.closest(".right")) {
 						console.log("reset here");
 						div.style.left = originalLeft;
 					}
@@ -252,11 +252,11 @@ export class Animate implements iRender {
 
 				//only allow top card on waste to be dragged
 				if (div.closest(".waste")) {
-					var wasteDiv =
+					const wasteDiv =
 						document.querySelector<HTMLDivElement>(".waste")!;
-					var card = this.sprites.get(div)!;
-					var waste = this.sprites.get(wasteDiv)!;
-					var wasteCards = this.world.pileCards.get(waste)!.cards;
+					const card = this.sprites.get(div)!;
+					const waste = this.sprites.get(wasteDiv)!;
+					const wasteCards = this.world.pileCards.get(waste)!.cards;
 					if (
 						!wasteCards.length ||
 						card !== wasteCards[wasteCards.length - 1]
@@ -283,28 +283,28 @@ export class Animate implements iRender {
 	}
 
 	addClickListener(div: HTMLDivElement) {
-		var entity = this.sprites.get(div)!;
-		var pile = this.world.pileType.get(entity);
+		const entity = this.sprites.get(div)!;
+		const pile = this.world.pileType.get(entity);
 		if (pile) {
 			switch (pile.kind) {
 				case "stock":
 					div.addEventListener("click", () => {
-						var wasteDiv =
+						const wasteDiv =
 							document.querySelector<HTMLDivElement>(".waste")!;
-						var stockCards =
+						const stockCards =
 							this.world.pileCards.get(entity)!.cards;
 						if (stockCards.length) {
-							var stockCardDiv = this.entityToSprites.get(
+							const stockCardDiv = this.entityToSprites.get(
 								stockCards[stockCards.length - 1]
 							)!;
 							return this.makeMove(stockCardDiv, wasteDiv);
 						}
-						var waste = this.sprites.get(wasteDiv)!;
-						var wasteCards = this.world.pileCards.get(waste)!.cards;
+						const waste = this.sprites.get(wasteDiv)!;
+						const wasteCards = this.world.pileCards.get(waste)!.cards;
 						if (wasteCards.length) {
-							var topWasteCard =
+							const topWasteCard =
 								wasteCards[wasteCards.length - 1];
-							var topWasteCardDiv =
+							const topWasteCardDiv =
 								this.entityToSprites.get(topWasteCard)!;
 							this.makeMove(topWasteCardDiv, div);
 						}
