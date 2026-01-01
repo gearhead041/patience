@@ -14,7 +14,7 @@ generic cardback here
  background-color: aqua;
 }
 #drag-layer {
-	/* pointer-events: none; */
+	pointer-events: none;
 }
 .card-face {
 	font-family: 'Bodoni Moda',serif;

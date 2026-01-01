@@ -5,6 +5,3 @@ export interface iRender {
     createEntitySprite(entity: Entity,entityName: EntityName): HTMLDivElement;
     updatePileSprite(entity: Entity): void;
 }
-
-export interface iAnimate {
-}

@@ -27,7 +27,7 @@ const stock = world.createPile("stock");
 const waste = world.createPile("waste");
 
 var foundationDivs = foundations.map(x => animationService.createEntitySprite(x,"Pile"));
-var stockDiv = animationService.createEntitySprite(stock,"Pile");
+var stockDiv = animationService.createEntitySprite(stock, "Pile");
 stockDiv.classList.add("left");
 var wasteDiv = animationService.createEntitySprite(waste,"Pile");
 wasteDiv.classList.add("right");
@@ -60,7 +60,7 @@ shareCards(world,tableaus,deck,stock);
 // foundations.forEach(x => animationService.updatePileSprite(x));
 tableaus.forEach(x => animationService.updatePileSprite(x));
 animationService.updatePileSprite(stock);
-
+animationService.addClickListener(stockDiv);
 app.appendChild(board);
 
 
