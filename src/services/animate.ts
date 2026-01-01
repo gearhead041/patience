@@ -209,13 +209,13 @@ export class Animate implements iRender {
 				console.log("reached reset");
 				//reset position here if no movement is made
 				if (originalParent.closest(".market")) {
-					//reset differently when src is market pillar
+					//reset differently when src is market
 					console.log("reached market reset");
 					div.style.top = "0";
 					div.style.left = MARKET_OFFSET;
-					//reset differently for cards that begin a slice on the right pillar
-					if (div.closest(".right")) {
-						console.log("reset here");
+					//reset differently for cards that begin a slice on the waste pile
+					if (originalParent.closest(".waste")) {
+						console.log("reset left here");
 						div.style.left = originalLeft;
 					}
 				} else {
