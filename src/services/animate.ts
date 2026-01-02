@@ -162,6 +162,13 @@ export class Animate implements iRender {
 		}
 	}
 
+	undo() {
+		const undone = this.movementService.undo();
+		console.log('undone result',undone);
+		if (!undone) return;
+		this.updatePileSprite(undone.src);
+		this.updatePileSprite(undone.dest);
+	}
 	///add draggable event listener
 	private addDragEventListener(div: HTMLDivElement) {
 		let offset = [0, 0];

@@ -2,21 +2,21 @@ import type { Entity, Move, MoveHistory } from "../components";
 import { HISTORY_SIZE, MARKET_FLIP_COUNT } from "../settings";
 import type { World } from "../world";
 import type { IMovement } from "./interface/imovement";
-import { RingBuffer } from "./ringbuffer";
+import { MoveStack } from "./movestack";
 
 export class MovementService implements IMovement {
 	private world: World;
-	public moves: RingBuffer<MoveHistory>;
+	public moves: MoveStack<MoveHistory>; 
 
 	constructor(world: World) {
 		this.world = world;
-		this.moves = new RingBuffer<MoveHistory>(HISTORY_SIZE);
+		this.moves = new MoveStack<MoveHistory>(HISTORY_SIZE);
 	}
 
 	moveCard(move: Move, validate = true): boolean {
-		if (validate && !this.validateMove(move)) {
-			return false;
-		}
+		// if (validate && !this.validateMove(move)) {
+		// 	return false;
+		// }
 
 		//TODO handle default movement by click
 		const { pile: srcPile, index: srcIndex } = this.world.inPile.get(
@@ -110,6 +110,7 @@ export class MovementService implements IMovement {
 			wasStockFlip,
 			wasRecycle,
 		});
+		console.log('history',this.moves);
 		return true;
 	}
 
@@ -158,9 +159,12 @@ export class MovementService implements IMovement {
 	}
 
 	undo(): { src: Entity; dest: Entity } | null {
-		const history = this.moves.shift();
-		if (!history) return null;
+		console.log('reached here ');
+		var history = this.moves.pop();
 
+		console.log('history:', this.moves);
+		if (!history) return null;
+		
 		const {
 			move,
 			srcPile,

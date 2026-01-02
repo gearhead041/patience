@@ -42,6 +42,14 @@ wasteDiv.classList.add("right");
 market.appendChild(stockDiv);
 market.appendChild(wasteDiv);
 
+
+//undo button
+const undoButton = document.createElement("button");
+undoButton.textContent = "Undo";
+undoButton.classList.add("undo-button");
+undoButton.addEventListener("click", () => {
+	animationService.undo();
+});
 // Foundations
 const foundation = document.createElement("div");
 foundation.classList.add("foundation");
@@ -50,6 +58,7 @@ foundations.forEach((f) => {
 });
 
 top.appendChild(market);
+top.appendChild(undoButton);
 top.appendChild(foundation);
 app.appendChild(top);
 

@@ -1,8 +1,8 @@
-import type { Move, MoveHistory } from "../../components";
-import type { RingBuffer } from "../ringbuffer";
+import type { Entity, Move, MoveHistory } from "../../components";
+import type { MoveStack } from "../movestack";
 
 export interface IMovement {
-    moves: RingBuffer<MoveHistory>;
+    moves: MoveStack<MoveHistory>;
     moveCard(move: Move): boolean;
-    undo(): void;
+    undo(): { src: Entity; dest: Entity } | null;
 }
