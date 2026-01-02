@@ -13,7 +13,7 @@ export class MoveStack<T> {
 			this.moveStack.shift();
 		}
 		if( this.undoneStack.length > 0) {
-			this.undoneStack.length = 0; //clear redo stack on new move
+			this.undoneStack.splice(0); //clear redo stack on new move
 		}
 	}
 
