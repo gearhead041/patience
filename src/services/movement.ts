@@ -1,15 +1,16 @@
 import type { Entity, Move, MoveHistory } from "../components";
-import { MARKET_FLIP_COUNT } from "../settings";
+import { HISTORY_SIZE, MARKET_FLIP_COUNT } from "../settings";
 import type { World } from "../world";
 import type { IMovement } from "./interface/imovement";
+import { RingBuffer } from "./ringbuffer";
 
 export class MovementService implements IMovement {
 	private world: World;
-	public moves: MoveHistory[];
+	public moves: RingBuffer<MoveHistory>;
 
 	constructor(world: World) {
 		this.world = world;
-		this.moves = [];
+		this.moves = new RingBuffer<MoveHistory>(HISTORY_SIZE);
 	}
 
 	moveCard(move: Move, validate = true): boolean {
@@ -157,7 +158,7 @@ export class MovementService implements IMovement {
 	}
 
 	undo(): { src: Entity; dest: Entity } | null {
-		const history = this.moves.pop();
+		const history = this.moves.shift();
 		if (!history) return null;
 
 		const {
