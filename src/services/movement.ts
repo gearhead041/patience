@@ -14,9 +14,9 @@ export class MovementService implements IMovement {
 	}
 
 	moveCard(move: Move, validate = true): boolean {
-		// if (validate && !this.validateMove(move)) {
-		// 	return false;
-		// }
+		if (validate && !this.validateMove(move)) {
+			return false;
+		}
 
 		//TODO handle default movement by click
 		const { pile: srcPile, index: srcIndex } = this.world.inPile.get(
