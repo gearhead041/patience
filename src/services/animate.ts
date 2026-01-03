@@ -1,5 +1,6 @@
 import type { Entity, EntityName, Move } from "../components";
 import {
+    MARKET_DISPLAY_COUNT,
 	MARKET_FLIP_COUNT,
 	MARKET_OFFSET,
 	PILLAR_FACEDOWN_OFFSET,
@@ -59,7 +60,7 @@ export class Animate implements iRender {
 		if (!pileCards.length) return;
 		switch (pileType) {
 			case "waste":
-				const stepBack = Math.min(cardDivs.length, MARKET_FLIP_COUNT);
+				const stepBack = Math.min(cardDivs.length, MARKET_DISPLAY_COUNT);
 				const addedArray = cardDivs.slice(-stepBack);
 				addedArray.forEach((c, i) => {
 					const card =
