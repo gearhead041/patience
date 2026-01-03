@@ -117,31 +117,34 @@ export class MovementService implements IMovement {
 	validateMove(move: Move) {
 		const srcCard = this.world.cards.get(move.card)!;
 		const destPileType = this.world.pileType.get(move.dest)!.kind;
-		const pileCards = this.world.pileCards.get(move.dest)!.cards;
-		const topCardPile = this.world.cards.get(
-			pileCards[pileCards.length - 1]
+		const destPileCards = this.world.pileCards.get(move.dest)!.cards;
+		const topCardDestPile = this.world.cards.get(
+			destPileCards[destPileCards.length - 1]
 		);
 
 		//validate move
 		switch (destPileType) {
 			case "tableau":
-				if (!topCardPile) {
+				if (!topCardDestPile) {
 					return srcCard.rank === 13;
 				}
 				return (
-					topCardPile.rank - srcCard.rank === 1 &&
-					topCardPile.suit.color !== srcCard.suit.color
+					topCardDestPile.rank - srcCard.rank === 1 &&
+					topCardDestPile.suit.color !== srcCard.suit.color
 				);
 			case "foundation":
-				if (!topCardPile) {
-					return srcCard.rank === 1;
+				if (!topCardDestPile) {
+					return srcCard.rank === 1; //start with the ace
 				}
+				var srcPile  = this.world.inPile.get(move.card)!.pile;
+				var srcPileCards = this.world.pileCards.get(srcPile)!.cards;
 				return (
-					srcCard.rank - topCardPile.rank === 1 &&
-					srcCard.suit === topCardPile.suit
+					srcPileCards[srcPileCards.length -1] === move.card && //must be top card nothing attached below
+					srcCard.rank - topCardDestPile.rank === 1 &&
+					srcCard.suit === topCardDestPile.suit
 				);
 			case "stock": //moving to stock can only come from waste
-				if (pileCards.length > 0) return false;
+				if (destPileCards.length > 0) return false;
 				const stockSrcPile = this.world.inPile.get(move.card)!.pile;
 				const stockSrcPileType =
 					this.world.pileType.get(stockSrcPile)!.kind;
