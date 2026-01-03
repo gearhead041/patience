@@ -225,8 +225,10 @@ export class Animate implements iRender {
 					div.style.left = "0";
 					if (
 						originalParent?.classList.contains("pillar") || //first card on the pillar
-						div.closest(".foundation")
+						originalParent.closest(".foundation")
 					) {
+                        console.log('base pillar/foundation reset');
+                        
 						// or is from the foundation
 						div.style.top = "0px";
 					} else {
