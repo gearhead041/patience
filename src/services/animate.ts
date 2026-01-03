@@ -59,7 +59,6 @@ export class Animate implements iRender {
 		if (!pileCards.length) return;
 		switch (pileType) {
 			case "waste":
-				console.log("update waste pile");
 				const stepBack = Math.min(cardDivs.length, MARKET_FLIP_COUNT);
 				const addedArray = cardDivs.slice(-stepBack);
 				addedArray.forEach((c, i) => {
@@ -139,7 +138,6 @@ export class Animate implements iRender {
 	): boolean {
 		try {
 			if (!destPileDiv) {
-				console.log("no lower element found");
 				return false;
 			}
 			const card = this.sprites.get(srcCardDiv)!;
@@ -217,12 +215,10 @@ export class Animate implements iRender {
 				//reset position here if no movement is made
 				if (originalParent.closest(".market")) {
 					//reset differently when src is market
-					console.log("reached market reset");
 					div.style.top = "0";
 					div.style.left = MARKET_OFFSET;
 					//reset differently for cards that begin a slice on the waste pile
 					if (originalParent.closest(".waste")) {
-						console.log("reset left here");
 						div.style.left = originalLeft;
 					}
 				} else {
