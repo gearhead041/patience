@@ -250,7 +250,7 @@ export class Animate implements iRender {
 		div.addEventListener("mousedown", (e: MouseEvent) => {
 			e.preventDefault();
 			e.stopPropagation();
-			if (div.classList.contains("faceup")) {
+			if (div.classList.contains("faceup") && e.button === 0) {
 				//save original data for potential reset
 				zIndex = div.style.zIndex;
 				originalParent = div.parentElement as HTMLDivElement;
