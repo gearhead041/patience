@@ -1,7 +1,6 @@
 import type { Entity, EntityName, Move } from "../components";
 import {
     MARKET_DISPLAY_COUNT,
-	MARKET_FLIP_COUNT,
 	MARKET_OFFSET,
 	PILLAR_FACEDOWN_OFFSET,
 	PILLAR_FACEUP_OFFSET,
@@ -109,6 +108,7 @@ export class Animate implements iRender {
 						const textNode = document.createElement("div");
 						textNode.classList.add("card-face");
 						textNode.textContent = cardData.rank.toString();
+                        // textNode.style.backgroundImage
 						cardDiv.appendChild(textNode);
 					}
 

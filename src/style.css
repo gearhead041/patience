@@ -31,6 +31,7 @@ generic cardback here
 }
 .card.faceup.heart {
 	background-color: rgb(172, 15, 15);
+	color: white;
 }
 .card.faceup.diamond {
 	background-color: rgb(172, 15, 15);

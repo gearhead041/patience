@@ -13,8 +13,8 @@ export class MovementService implements IMovement {
 		this.moves = new MoveStack<MoveHistory>(HISTORY_SIZE);
 	}
 
-	moveCard(move: Move, validate = true): boolean {
-		if (validate && !this.validateMove(move)) {
+	moveCard(move: Move): boolean {
+		if (!this.validateMove(move)) {
 			return false;
 		}
 
@@ -82,13 +82,13 @@ export class MovementService implements IMovement {
 				cardsMoved = tableauSlice; // Capture moved cards
 
 				//flip last card
-				const topsrcIdx = srcPileCards[srcPileCards.length - 1];
+				const topCardSrc = srcPileCards[srcPileCards.length - 1];
 
-				if (topsrcIdx !== undefined) {
+				if (topCardSrc !== undefined) {
 					// Only record if we actually flip it from face down
-					if (!this.world.faceUp.get(topsrcIdx)?.value) {
-						this.world.faceUp.set(topsrcIdx, { value: true })!;
-						revealedCard = topsrcIdx;
+					if (!this.world.faceUp.get(topCardSrc)?.value) {
+						this.world.faceUp.set(topCardSrc, { value: true })!;
+						revealedCard = topCardSrc;
 					}
 				}
 				destPileCards.push(...tableauSlice);
@@ -162,10 +162,8 @@ export class MovementService implements IMovement {
 	}
 
 	undo(): { src: Entity; dest: Entity } | null {
-		console.log('reached here ');
 		var history = this.moves.pop();
 
-		console.log('history:', this.moves);
 		if (!history) return null;
 		
 		const {
